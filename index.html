@@ -1,0 +1,1944 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Películas Premium</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+    <style>
+        /* Estilos para el login */
+        #loginSection {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a3a6e, #121212);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .login-container {
+            max-width: 400px;
+            width: 90%;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .login-card {
+            background: rgba(20, 30, 50, 0.9);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(74, 140, 255, 0.2);
+        }
+
+        .login-header {
+            padding: 30px 20px;
+            text-align: center;
+            background: rgba(74, 140, 255, 0.1);
+            border-bottom: 1px solid rgba(74, 140, 255, 0.2);
+        }
+
+        .login-header h2 {
+            color: #fff;
+            margin: 15px 0 5px;
+            font-size: 1.8rem;
+        }
+
+        .login-header p {
+            color: #dddddd;
+            font-size: 0.9rem;
+        }
+
+        .login-logo {
+            font-size: 2.5rem;
+            color: #4a8cff;
+            background: rgba(74, 140, 255, 0.1);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            border: 2px solid rgba(74, 140, 255, 0.3);
+        }
+
+        .login-form {
+            padding: 30px;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #4a8cff;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border-radius: 30px;
+            border: 1px solid rgba(74, 140, 255, 0.3);
+            background: rgba(20, 30, 50, 0.5);
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .login-form input:focus {
+            outline: none;
+            border-color: #4a8cff;
+            box-shadow: 0 0 10px rgba(74, 140, 255, 0.3);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 30px;
+            background: linear-gradient(to right, #4a8cff, #0066ff);
+            color: white;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(to right, #0066ff, #4a8cff);
+            box-shadow: 0 5px 15px rgba(74, 140, 255, 0.4);
+        }
+
+        #loginError {
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Estilos para Películas Premium */
+        :root {
+            --primary-color: #4a8cff;
+            --secondary-color: #1a3a6e;
+            --accent-color: #0066ff;
+            --dark-bg: #121212;
+            --darker-bg: #0a0a0a;
+            --card-bg: rgba(20, 30, 50, 0.5);
+            --text-color: #ffffff;
+            --text-secondary: #dddddd;
+            --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(74, 140, 255, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-color);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary-color);
+        }
+
+        .search-container {
+            position: relative;
+            width: 250px;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 8px 15px 8px 35px;
+            border-radius: 20px;
+            border: none;
+            background: rgba(74, 140, 255, 0.1);
+            color: var(--text-color);
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        #searchInput:focus {
+            outline: none;
+            background: rgba(74, 140, 255, 0.2);
+            box-shadow: 0 0 10px rgba(74, 140, 255, 0.3);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 70vh;
+            margin-top: 70px;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            padding: 0 5%;
+            position: relative;
+            transition: background-image 0.8s ease-in-out;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 600px;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(74, 140, 255, 0.3);
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        /* Estilo específico para el botón del hero */
+        #heroPlayBtn {
+            width: 150px;
+            height: 45px;
+            justify-content: center;
+            margin: 0 auto;
+            flex-shrink: 0;
+        }
+
+        .btn {
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-color);
+            box-shadow: 0 0 15px rgba(74, 140, 255, 0.5);
+        }
+
+        /* Hero Controls */
+        .hero-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 3;
+        }
+        
+        .hero-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .hero-dot.active {
+            background: var(--primary-color);
+            transform: scale(1.2);
+        }
+        
+        .hero-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        
+        .hero-nav-btn:hover {
+            background: var(--primary-color);
+        }
+        
+        .hero-prev {
+            left: 20px;
+        }
+        
+        .hero-next {
+            right: 20px;
+        }
+
+        /* Search Results */
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            max-height: 400px;
+            overflow-y: auto;
+            background: var(--darker-bg);
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            display: none;
+        }
+        
+        .search-result-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+        
+        .search-result-item:hover {
+            background: rgba(74, 140, 255, 0.2);
+        }
+        
+        .search-result-poster {
+            width: 40px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        
+        .search-result-info {
+            flex: 1;
+        }
+        
+        .search-result-title {
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .search-result-year {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .search-loading {
+            padding: 10px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .search-no-results {
+            padding: 15px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        /* Main Content */
+        .main-container {
+            padding: 40px 5%;
+            margin-top: -50px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Nuevo estilo para el contenedor de categorías */
+        .categories-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding: 15px 5px;
+            margin-bottom: 30px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) transparent;
+        }
+
+        .categories-container::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .categories-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .categories-container::-webkit-scrollbar-thumb {
+            background-color: var(--primary-color);
+            border-radius: 6px;
+        }
+
+        .category-item {
+            flex: 0 0 auto;
+            padding: 12px 25px;
+            border-radius: 30px;
+            background: rgba(74, 140, 255, 0.1);
+            color: var(--text-color);
+            border: 1px solid var(--primary-color);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transform-origin: left center;
+            transform: scale(0.95);
+            opacity: 0.8;
+        }
+
+        .category-item:hover {
+            background: rgba(74, 140, 255, 0.3);
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .category-item.active {
+            background: var(--primary-color);
+            transform: scale(1.05);
+            opacity: 1;
+            box-shadow: 0 5px 15px rgba(74, 140, 255, 0.4);
+            font-weight: 600;
+        }
+
+        /* Nuevos estilos para las secciones de películas por categoría */
+        .category-section {
+            margin-bottom: 40px;
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-right: 10px;
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .view-all {
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .view-all:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+
+        .movies-scroll-container {
+            position: relative;
+        }
+
+        .movies-scroll {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding: 10px 5px;
+            scrollbar-width: none; /* Firefox */
+        }
+
+        .movies-scroll::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+
+        .scroll-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .scroll-button.left {
+            left: 10px;
+        }
+
+        .scroll-button.right {
+            right: 10px;
+        }
+
+        .movies-scroll-container:hover .scroll-button {
+            opacity: 1;
+        }
+
+        /* Movie Card */
+        .movie-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            flex: 0 0 auto;
+            width: 200px;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 100, 255, 0.4);
+        }
+
+        .movie-poster {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            transition: all 0.3s;
+        }
+
+        .movie-card:hover .movie-poster {
+            opacity: 0.8;
+        }
+
+        .movie-info {
+            padding: 15px;
+        }
+
+        .movie-title {
+            font-weight: bold;
+            margin: 0 0 5px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 1rem;
+        }
+
+        .movie-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .movie-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: gold;
+        }
+
+        .movie-hover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 15px;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .movie-card:hover .movie-hover {
+            opacity: 1;
+        }
+
+        .play-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            width: 100%;
+            text-align: center;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .play-btn:hover {
+            background: var(--accent-color);
+            box-shadow: 0 0 10px rgba(74, 140, 255, 0.7);
+        }
+
+        /* Player Modal */
+        .player-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .player-container {
+            width: 90%;
+            max-width: 1200px;
+            background: var(--darker-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 100, 255, 0.5);
+            position: relative;
+            transition: all 0.3s ease;
+            resize: both;
+            overflow: auto;
+            max-width: 95vw;
+            max-height: 95vh;
+        }
+
+        /* Ajustes para pantalla completa */
+        .player-modal:-webkit-full-screen .player-container {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            resize: none;
+        }
+
+        .vjs-fullscreen {
+            padding-top: 0 !important;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            background: var(--primary-color);
+            transform: rotate(90deg);
+        }
+
+        .video-container {
+            position: relative;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        }
+
+        /* Estilos para Video.js */
+        .video-js {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .modal-content {
+            padding: 25px;
+        }
+
+        .movie-details h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 12px;
+            align-items: flex-start;
+        }
+
+        .detail-icon {
+            width: 25px;
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+
+        .detail-text {
+            flex: 1;
+            color: var(--text-secondary);
+        }
+
+        .genre-tag {
+            display: inline-block;
+            background: rgba(74, 140, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            border: 1px solid var(--primary-color);
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transform: translateX(150%);
+            transition: transform 0.5s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification-icon {
+            font-size: 1.2rem;
+        }
+
+        .notification-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notification-title {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .notification-message {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1002;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(74, 140, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Skeleton Loading */
+        .skeleton-poster {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Grid para vista de categorías */
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            padding: 10px;
+        }
+
+        /* Botón flotante para regresar */
+        .floating-back-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 120px;
+            height: 50px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 999;
+            transition: all 0.3s;
+        }
+
+        .floating-back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .movie-card {
+                width: 180px;
+            }
+            
+            .movie-poster {
+                height: 270px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .navbar {
+                padding: 15px 3%;
+            }
+            
+            .hero {
+                padding: 0 3%;
+            }
+            
+            .main-container {
+                padding: 30px 3%;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .movie-card {
+                width: 160px;
+            }
+            
+            .movie-poster {
+                height: 240px;
+            }
+
+            .movies-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .search-container {
+                width: 200px;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-description {
+                display: none;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .movie-card {
+                width: 150px;
+            }
+            
+            .movie-poster {
+                height: 225px;
+            }
+            
+            .hero-nav-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 1rem;
+            }
+
+            .skeleton-poster {
+                height: 225px;
+            }
+            
+            .category-title {
+                font-size: 1.3rem;
+            }
+
+            .movies-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar {
+                padding: 12px 15px;
+            }
+            
+            .logo {
+                font-size: 1.2rem;
+            }
+            
+            .logo i {
+                font-size: 1.5rem;
+            }
+            
+            .search-container {
+                width: 150px;
+            }
+            
+            .hero {
+                height: 60vh;
+                justify-content: center;
+                text-align: center;
+            }
+            
+            .hero-content {
+                max-width: 100%;
+            }
+            
+            .hero-buttons {
+                justify-content: center;
+            }
+            
+            .movie-card {
+                width: 130px;
+            }
+            
+            .movie-poster {
+                height: 195px;
+            }
+            
+            .player-container {
+                width: 95%;
+            }
+
+            .hero-title {
+                font-size: 1.8rem;
+            }
+
+            .hero-nav-btn {
+                display: none;
+            }
+
+            .skeleton-poster {
+                height: 195px;
+            }
+            
+            .category-item {
+                padding: 10px 20px;
+                font-size: 0.85rem;
+            }
+            
+            .category-title {
+                font-size: 1.1rem;
+            }
+            
+            .scroll-button {
+                width: 30px;
+                height: 30px;
+                font-size: 1rem;
+            }
+
+            .movies-grid {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            }
+
+            .floating-back-btn {
+                width: 100px;
+                height: 40px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Section -->
+    <div id="loginSection">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <i class="fas fa-film login-logo"></i>
+                    <h2>Películas Premium</h2>
+                    <p>Ingresa tus credenciales para acceder</p>
+                </div>
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" id="username" placeholder="Usuario" required>
+                    </div>
+                    <div class="form-group">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" id="password" placeholder="Contraseña" required>
+                    </div>
+                    <div id="loginError" class="alert alert-danger d-none"></div>
+                    <button type="submit" class="login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Ingresar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Películas Premium Content (hidden by default) -->
+    <div id="mainContent" style="display:none;">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <a href="#" class="logo">
+                <i class="fas fa-film"></i>
+                <span>Películas Premium</span>
+            </a>
+            
+            <div class="nav-links">
+                <a href="#" class="nav-link active">Inicio</a>
+                <a href="#" class="nav-link">Películas</a>
+                <a href="#" class="nav-link">Géneros</a>
+                <a href="#" class="nav-link">Novedades</a>
+            </div>
+            
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Buscar películas...">
+                <div class="search-results" id="searchResults"></div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero" id="heroSection">
+            <div class="hero-content">
+                <h1 class="hero-title">Disfruta del mejor cine</h1>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" id="heroPlayBtn">
+                        <i class="fas fa-play"></i> Ver ahora
+                    </button>
+                </div>
+            </div>
+            
+            <button class="hero-nav-btn hero-prev" id="heroPrevBtn">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="hero-nav-btn hero-next" id="heroNextBtn">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            
+            <div class="hero-controls" id="heroDots"></div>
+        </section>
+
+        <!-- Main Content -->
+        <main class="main-container" id="content">
+            <!-- Las secciones de categorías se generarán dinámicamente -->
+        </main>
+
+        <!-- Player Modal -->
+        <div class="player-modal" id="player">
+            <div class="player-container">
+                <button class="close-btn" id="closePlayer">
+                    <i class="fas fa-times"></i>
+                </button>
+                
+                <div class="video-container">
+                    <video id="videoPlayer" class="video-js vjs-big-play-centered" controls preload="auto">
+                        <p class="vjs-no-js">
+                            Para ver este video por favor habilita JavaScript, o considera actualizar a un navegador que
+                            <a href="https://videojs.com/html5-video-support/" target="_blank">soporte video HTML5</a>
+                        </p>
+                    </video>
+                </div>
+                
+                <div class="modal-content">
+                    <div class="movie-details">
+                        <h2 id="movieTitle"></h2>
+                        
+                        <div class="detail-row">
+                            <div class="detail-icon"><i class="fas fa-calendar-alt"></i></div>
+                            <div class="detail-text" id="movieYear"></div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-icon"><i class="fas fa-clock"></i></div>
+                            <div class="detail-text" id="movieRuntime"></div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-icon"><i class="fas fa-star"></i></div>
+                            <div class="detail-text" id="movieRating"></div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-icon"><i class="fas fa-film"></i></div>
+                            <div class="detail-text" id="movieGenres"></div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-icon"><i class="fas fa-align-left"></i></div>
+                            <div class="detail-text" id="movieOverview"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification -->
+        <div class="notification" id="updateNotification">
+            <i class="fas fa-sync-alt notification-icon"></i>
+            <div class="notification-content">
+                <div class="notification-title">¡Nuevas películas disponibles!</div>
+                <div class="notification-message">Haz clic para actualizar la lista</div>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div class="loading-spinner" id="loadingSpinner">
+            <div class="spinner"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    <!-- Video.js -->
+    <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+    <script>
+        // Configuración compartida
+        const embyApiKey = '3bfb740b86be49a0bd1b6a0771c0020a';
+        const tmdbApiKey = 'e22418df765186e2208cf44bef9e3bd2';
+        const serverUrl = 'http://mxcuentas.ddns.net:8081';
+        const parentFolderId = '75892f06ac33a7de6ed03b383818d7ad';
+
+        // Credenciales de acceso al administrador
+        const ADMIN_CREDENTIALS = {
+            'SKINHEAD': '5678',
+            'Saul': '1234'
+        };
+
+        // Variables de estado
+        let tmdbCache = {};
+        let allMovies = [];
+        let heroMovies = [];
+        let currentHeroIndex = 0;
+        let heroInterval = null;
+        let isHoveringHero = false;
+        let searchTimeout = null;
+        let lastSearchTerm = '';
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let videoPlayer = null;
+        let genreSections = {};
+
+        // Función para hacer solicitudes con CORS
+        async function makeCorsRequest(url, options = {}) {
+            try {
+                // Añadir encabezados CORS si no están presentes
+                if (!options.headers) {
+                    options.headers = {};
+                }
+                
+                options.headers['X-Emby-Token'] = embyApiKey;
+                options.headers['Accept'] = 'application/json';
+                options.mode = 'cors'; // Esto es importante para CORS
+                
+                const response = await fetch(url, options);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('Error en la solicitud CORS:', error);
+                throw error;
+            }
+        }
+
+        // Inicialización del login
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('loginForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                const errorElement = document.getElementById('loginError');
+                
+                // Verificar si es un administrador
+                if (ADMIN_CREDENTIALS[username] && ADMIN_CREDENTIALS[username] === password) {
+                    handleSuccessfulLogin();
+                    return;
+                }
+                
+                // Si no es admin, intentar autenticar contra Jellyfin
+                errorElement.textContent = 'Verificando credenciales...';
+                errorElement.classList.remove('d-none');
+                errorElement.classList.remove('alert-danger');
+                errorElement.classList.add('alert-info');
+                
+                try {
+                    const authResult = await authenticateWithJellyfin(username, password);
+                    
+                    if (authResult.authenticated) {
+                        handleSuccessfulLogin();
+                    } else {
+                        throw new Error('Credenciales incorrectas');
+                    }
+                } catch (error) {
+                    errorElement.textContent = 'Credenciales incorrectas';
+                    errorElement.classList.remove('alert-info');
+                    errorElement.classList.add('alert-danger');
+                }
+            });
+        });
+
+        async function authenticateWithJellyfin(username, password) {
+            try {
+                const authResponse = await makeCorsRequest(`${serverUrl}/Users/AuthenticateByName`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `MediaBrowser Client="Jellyfin Web", Device="Browser", DeviceId="AdminPanel", Version="10.8.0"`,
+                        'Content-Type': 'application/json',
+                        'X-Emby-Token': embyApiKey
+                    },
+                    body: JSON.stringify({
+                        Username: username,
+                        Pw: password
+                    })
+                });
+                
+                return { authenticated: true };
+            } catch (error) {
+                console.error('Error en autenticación:', error);
+                return { authenticated: false };
+            }
+        }
+
+        function handleSuccessfulLogin() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            document.getElementById('loginError').classList.add('d-none');
+            
+            initMoviesApp();
+        }
+
+        async function initMoviesApp() {
+            loadMovies();
+            
+            document.getElementById('searchInput').addEventListener('input', handleSearch);
+            document.getElementById('updateNotification').addEventListener('click', () => loadMovies());
+            document.getElementById('closePlayer').addEventListener('click', closePlayer);
+            document.getElementById('heroPlayBtn').addEventListener('click', playHeroMovie);
+            
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.search-container')) {
+                    document.getElementById('searchResults').style.display = 'none';
+                }
+            });
+            
+            const savedTmdbCache = localStorage.getItem('tmdbCache');
+            if (savedTmdbCache) {
+                tmdbCache = JSON.parse(savedTmdbCache);
+            }
+        }
+
+        async function loadMovies() {
+            showLoading();
+            const cacheKey = `moviesCache_${parentFolderId}`;
+            const cachedData = localStorage.getItem(cacheKey);
+
+            try {
+                const data = await makeCorsRequest(`${serverUrl}/Items?Recursive=true&IncludeItemTypes=Movie&SortBy=PremiereDate,ProductionYear,SortName&SortOrder=Descending,Descending,Ascending&ParentId=${parentFolderId}&Fields=Genres,GenreItems,PremiereDate`);
+                
+                if (data.Items) {
+                    allMovies = data.Items.sort((a, b) => {
+                        const dateA = a.PremiereDate ? new Date(a.PremiereDate) : null;
+                        const dateB = b.PremiereDate ? new Date(b.PremiereDate) : null;
+                        
+                        if (dateA && dateB) return dateB - dateA;
+                        if (dateA && !dateB) return -1;
+                        if (!dateA && dateB) return 1;
+                        
+                        const yearA = a.ProductionYear || 0;
+                        const yearB = b.ProductionYear || 0;
+                        if (yearA !== yearB) return yearB - yearA;
+                        
+                        return a.Name.localeCompare(b.Name);
+                    });
+                    
+                    heroMovies = allMovies.slice(0, 5);
+                    startHeroSlider();
+                    organizeMoviesByGenres();
+                    displayGenreSections();
+                    
+                    localStorage.setItem(cacheKey, JSON.stringify(data));
+                }
+            } catch (error) {
+                console.error('Error al cargar películas:', error);
+                if (cachedData) {
+                    const data = JSON.parse(cachedData);
+                    allMovies = (data.Items || []).sort((a, b) => {
+                        const dateA = a.PremiereDate ? new Date(a.PremiereDate) : null;
+                        const dateB = b.PremiereDate ? new Date(b.PremiereDate) : null;
+                        if (dateA && dateB) return dateB - dateA;
+                        if (dateA && !dateB) return -1;
+                        if (!dateA && dateB) return 1;
+                        const yearA = a.ProductionYear || 0;
+                        const yearB = b.ProductionYear || 0;
+                        if (yearA !== yearB) return yearB - yearA;
+                        return a.Name.localeCompare(b.Name);
+                    });
+                    
+                    heroMovies = allMovies.slice(0, 5);
+                    startHeroSlider();
+                    organizeMoviesByGenres();
+                    displayGenreSections();
+                } else {
+                    document.getElementById('content').innerHTML = '<p style="color:red; text-align:center; padding:20px;">Error al cargar las películas. Verifica tu conexión.</p>';
+                }
+            }
+            hideLoading();
+        }
+
+        function organizeMoviesByGenres() {
+            genreSections = {};
+            const allGenres = new Set();
+            
+            // Mantenemos el orden original para "Todas"
+            genreSections['Todas'] = [...allMovies];
+            
+            // Identificamos todos los géneros disponibles
+            allMovies.forEach(movie => {
+                const genres = movie.GenreItems ? movie.GenreItems.map(g => g.Name) : (movie.Genres || []);
+                genres.forEach(genre => allGenres.add(genre));
+            });
+            
+            // Para cada género (excepto "Todas"), mezclamos las películas aleatoriamente
+            allGenres.forEach(genre => {
+                if (genre !== 'Todas') {
+                    const moviesInGenre = allMovies.filter(movie => {
+                        const movieGenres = movie.GenreItems ? movie.GenreItems.map(g => g.Name) : (movie.Genres || []);
+                        return movieGenres.includes(genre);
+                    });
+                    
+                    // Mezclamos aleatoriamente las películas del género
+                    genreSections[genre] = [...moviesInGenre].sort(() => Math.random() - 0.5);
+                }
+            });
+        }
+
+        function displayGenreSections() {
+            const contentDiv = document.getElementById('content');
+            contentDiv.innerHTML = '';
+            
+            const sectionOrder = ['Todas', 'Acción', 'Aventura', 'Comedia', 'Drama', 'Ciencia Ficción', 'Fantasía', 'Terror', 'Romance', 'Animación', 'Documental'];
+            
+            sectionOrder.forEach(genre => {
+                if (genreSections[genre] && genreSections[genre].length > 0) {
+                    // Para "Todas" mostramos las primeras 20 en orden original
+                    // Para otros géneros mostramos 20 aleatorias (ya mezcladas)
+                    const moviesToShow = genreSections[genre].slice(0, 20);
+                    createGenreSection(genre, moviesToShow);
+                }
+            });
+            
+            setupScrollButtons();
+            setupCardEvents();
+        }
+
+        function createGenreSection(genre, movies) {
+            const contentDiv = document.getElementById('content');
+            const section = document.createElement('section');
+            section.className = 'category-section';
+            section.id = `genre-${genre.toLowerCase().replace(/\s+/g, '-')}`;
+            
+            section.innerHTML = `
+                <div class="category-header">
+                    <h2 class="category-title">
+                        <i class="fas fa-${getGenreIcon(genre)}"></i>
+                        ${genre}
+                    </h2>
+                    <span class="view-all" data-genre="${genre}">Ver todo</span>
+                </div>
+                <div class="movies-scroll-container">
+                    <div class="movies-scroll" id="scroll-${genre.toLowerCase().replace(/\s+/g, '-')}">
+                        ${movies.map(movie => createMovieCard(movie)).join('')}
+                    </div>
+                    <button class="scroll-button left">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="scroll-button right">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            `;
+            
+            contentDiv.appendChild(section);
+            section.querySelector('.view-all').addEventListener('click', () => filterByGenre(genre));
+        }
+
+        function getGenreIcon(genre) {
+            const icons = {
+                'Todas': 'film',
+                'Acción': 'explosion',
+                'Aventura': 'mountain-sun',
+                'Comedia': 'face-laugh-squint',
+                'Drama': 'masks-theater',
+                'Ciencia Ficción': 'robot',
+                'Fantasía': 'dragon',
+                'Terror': 'ghost',
+                'Romance': 'heart',
+                'Animación': 'film',
+                'Documental': 'camera'
+            };
+            return icons[genre] || 'film';
+        }
+
+        function createMovieCard(movie) {
+            const year = movie.PremiereDate 
+                ? new Date(movie.PremiereDate).getFullYear() 
+                : (movie.ProductionYear || 'N/A');
+            const rating = movie.CommunityRating ? parseFloat(movie.CommunityRating).toFixed(1) : '0';
+            
+            return `
+                <div class="movie-card" data-id="${movie.Id}" data-genres="${movie.GenreItems ? movie.GenreItems.map(g => g.Name).join(',') : (movie.Genres ? movie.Genres.join(',') : '')}" data-year="${year}" data-rating="${rating}">
+                    <img class="movie-poster" src="${serverUrl}/Items/${movie.Id}/Images/Primary?maxHeight=300&maxWidth=200&quality=70&api_key=${embyApiKey}" alt="${movie.Name}" loading="lazy">
+                    <div class="movie-hover">
+                        <h3 class="movie-title">${movie.Name}</h3>
+                        <div class="movie-meta">
+                            <span>${year}</span>
+                            <span class="movie-rating"><i class="fas fa-star"></i> ${rating}</span>
+                        </div>
+                        <button class="play-btn" data-id="${movie.Id}">
+                            <i class="fas fa-play"></i> Reproducir
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function setupScrollButtons() {
+            document.querySelectorAll('.movies-scroll-container').forEach(container => {
+                const scroll = container.querySelector('.movies-scroll');
+                const leftBtn = container.querySelector('.scroll-button.left');
+                const rightBtn = container.querySelector('.scroll-button.right');
+                
+                leftBtn.addEventListener('click', () => scroll.scrollBy({ left: -300, behavior: 'smooth' }));
+                rightBtn.addEventListener('click', () => scroll.scrollBy({ left: 300, behavior: 'smooth' }));
+                
+                scroll.addEventListener('scroll', () => {
+                    leftBtn.disabled = scroll.scrollLeft === 0;
+                    rightBtn.disabled = scroll.scrollLeft + scroll.clientWidth >= scroll.scrollWidth - 10;
+                });
+                
+                leftBtn.disabled = true;
+                rightBtn.disabled = scroll.clientWidth >= scroll.scrollWidth;
+            });
+        }
+
+        function setupCardEvents() {
+            document.querySelectorAll('.play-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const itemId = e.currentTarget.getAttribute('data-id');
+                    const movie = allMovies.find(m => m.Id === itemId);
+                    if (movie) playItem(itemId, movie.Name, movie.ProductionYear);
+                });
+            });
+
+            document.querySelectorAll('.movie-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('play-btn')) {
+                        const itemId = card.getAttribute('data-id');
+                        const movie = allMovies.find(m => m.Id === itemId);
+                        if (movie) playItem(itemId, movie.Name, movie.ProductionYear);
+                    }
+                });
+            });
+        }
+
+        function filterByGenre(genre) {
+            const filteredMovies = genreSections[genre] || [];
+            const heroSection = document.getElementById('heroSection');
+            
+            const genreView = document.createElement('div');
+            genreView.id = 'genre-view';
+            genreView.style.marginTop = '70px';
+            heroSection.insertAdjacentElement('afterend', genreView);
+            
+            document.getElementById('content').style.display = 'none';
+            
+            genreView.innerHTML = `
+                <section class="category-section" style="padding-top: 20px;">
+                    <div class="category-header">
+                        <h2 class="category-title">
+                            <i class="fas fa-${getGenreIcon(genre)}"></i>
+                            ${genre}
+                        </h2>
+                    </div>
+                    <div class="movies-grid">
+                        ${filteredMovies.map(movie => createMovieCard(movie)).join('')}
+                    </div>
+                </section>
+                
+                <button class="btn btn-primary floating-back-btn" id="backToAll">
+                    <i class="fas fa-arrow-left"></i> Regresar
+                </button>
+            `;
+            
+            document.getElementById('backToAll').addEventListener('click', () => {
+                genreView.style.opacity = '0';
+                genreView.style.transform = 'translateY(20px)';
+                genreView.style.transition = 'all 0.3s ease';
+                
+                setTimeout(() => {
+                    genreView.remove();
+                    document.getElementById('content').style.display = 'block';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 300);
+            });
+            
+            setupCardEvents();
+            
+            setTimeout(() => {
+                window.scrollTo({ top: genreView.offsetTop, behavior: 'smooth' });
+            }, 100);
+        }
+
+        function startHeroSlider() {
+            if (heroInterval) clearInterval(heroInterval);
+            
+            const dotsContainer = document.getElementById('heroDots');
+            dotsContainer.innerHTML = '';
+            heroMovies.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.className = `hero-dot ${index === currentHeroIndex ? 'active' : ''}`;
+                dot.addEventListener('click', () => {
+                    currentHeroIndex = index;
+                    updateHeroSection(currentHeroIndex);
+                    resetHeroTimer();
+                });
+                dotsContainer.appendChild(dot);
+            });
+            
+            heroMovies.forEach((movie, index) => {
+                const img = new Image();
+                img.src = `${serverUrl}/Items/${movie.Id}/Images/Backdrop?maxWidth=1280&quality=90&api_key=${embyApiKey}`;
+            });
+            
+            document.getElementById('heroPrevBtn').addEventListener('click', () => {
+                currentHeroIndex = (currentHeroIndex - 1 + heroMovies.length) % heroMovies.length;
+                updateHeroSection(currentHeroIndex);
+                resetHeroTimer();
+            });
+            
+            document.getElementById('heroNextBtn').addEventListener('click', () => {
+                currentHeroIndex = (currentHeroIndex + 1) % heroMovies.length;
+                updateHeroSection(currentHeroIndex);
+                resetHeroTimer();
+            });
+            
+            const heroSection = document.getElementById('heroSection');
+            heroSection.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, false);
+            
+            heroSection.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, false);
+            
+            heroSection.addEventListener('mouseenter', () => {
+                isHoveringHero = true;
+                clearInterval(heroInterval);
+            });
+            
+            heroSection.addEventListener('mouseleave', () => {
+                isHoveringHero = false;
+                resetHeroTimer();
+            });
+            
+            updateHeroSection(currentHeroIndex);
+            resetHeroTimer();
+        }
+
+        function updateHeroSection(index) {
+            if (heroMovies.length === 0) return;
+            
+            const movie = heroMovies[index];
+            const heroSection = document.getElementById('heroSection');
+            
+            heroSection.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('${serverUrl}/Items/${movie.Id}/Images/Backdrop?maxWidth=400&quality=30&api_key=${embyApiKey}')`;
+            
+            const img = new Image();
+            img.src = `${serverUrl}/Items/${movie.Id}/Images/Backdrop?maxWidth=1280&quality=90&api_key=${embyApiKey}`;
+            img.onload = () => {
+                heroSection.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('${img.src}')`;
+            };
+            
+            document.querySelector('.hero-title').textContent = movie.Name;
+            document.getElementById('heroPlayBtn').setAttribute('data-id', movie.Id);
+            currentHeroIndex = index;
+            
+            document.querySelectorAll('.hero-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+        }
+
+        function handleSwipe() {
+            const threshold = 50;
+            
+            if (touchStartX - touchEndX > threshold) {
+                currentHeroIndex = (currentHeroIndex + 1) % heroMovies.length;
+                updateHeroSection(currentHeroIndex);
+            } else if (touchEndX - touchStartX > threshold) {
+                currentHeroIndex = (currentHeroIndex - 1 + heroMovies.length) % heroMovies.length;
+                updateHeroSection(currentHeroIndex);
+            }
+            
+            resetHeroTimer();
+        }
+
+        function resetHeroTimer() {
+            if (heroInterval) clearInterval(heroInterval);
+            if (!isHoveringHero && heroMovies.length > 1) {
+                heroInterval = setInterval(() => {
+                    currentHeroIndex = (currentHeroIndex + 1) % heroMovies.length;
+                    updateHeroSection(currentHeroIndex);
+                }, 5000);
+            }
+        }
+
+        function playHeroMovie() {
+            const movieId = document.getElementById('heroPlayBtn').getAttribute('data-id');
+            const movie = heroMovies.find(m => m.Id === movieId);
+            if (movie) playItem(movieId, movie.Name, movie.ProductionYear);
+        }
+
+        function handleSearch(event) {
+            const searchTerm = event.target.value.trim();
+            
+            if (!searchTerm) {
+                document.getElementById('searchResults').style.display = 'none';
+                clearTimeout(searchTimeout);
+                lastSearchTerm = '';
+                return;
+            }
+            
+            if (searchTerm === lastSearchTerm) return;
+            lastSearchTerm = searchTerm;
+            
+            const resultsContainer = document.getElementById('searchResults');
+            resultsContainer.innerHTML = '<div class="search-loading">Buscando...</div>';
+            resultsContainer.style.display = 'block';
+            
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => performSearch(searchTerm), 300);
+        }
+
+        async function performSearch(searchTerm) {
+            const resultsContainer = document.getElementById('searchResults');
+            
+            try {
+                const filtered = allMovies.filter(movie => 
+                    movie.Name.toLowerCase().includes(searchTerm.toLowerCase())
+                ).slice(0, 10);
+                
+                if (filtered.length === 0) {
+                    resultsContainer.innerHTML = '<div class="search-no-results">No se encontraron películas</div>';
+                    return;
+                }
+                
+                resultsContainer.innerHTML = '';
+                filtered.forEach(movie => {
+                    const year = movie.ProductionYear || (movie.PremiereDate ? new Date(movie.PremiereDate).getFullYear() : '');
+                    const item = document.createElement('div');
+                    item.className = 'search-result-item';
+                    item.innerHTML = `
+                        <img class="search-result-poster" src="${serverUrl}/Items/${movie.Id}/Images/Primary?maxHeight=100&quality=70&api_key=${embyApiKey}" alt="${movie.Name}">
+                        <div class="search-result-info">
+                            <div class="search-result-title">${movie.Name}</div>
+                            <div class="search-result-year">${year}</div>
+                        </div>
+                    `;
+                    
+                    item.addEventListener('click', () => {
+                        playItem(movie.Id, movie.Name, movie.ProductionYear);
+                        resultsContainer.style.display = 'none';
+                        document.getElementById('searchInput').value = '';
+                    });
+                    
+                    resultsContainer.appendChild(item);
+                });
+            } catch (error) {
+                console.error('Error en la búsqueda:', error);
+                resultsContainer.innerHTML = '<div class="search-no-results">Error al buscar</div>';
+            }
+        }
+
+        async function playItem(itemId, movieName, productionYear) {
+            showLoading();
+            const videoUrl = `${serverUrl}/Items/${itemId}/Download?api_key=${embyApiKey}`;
+            
+            document.getElementById('player').style.display = 'flex';
+            
+            document.getElementById('movieTitle').textContent = movieName;
+            document.getElementById('movieYear').textContent = productionYear || 'Año no disponible';
+            document.getElementById('movieRuntime').textContent = 'Cargando...';
+            document.getElementById('movieRating').textContent = 'Cargando...';
+            document.getElementById('movieGenres').innerHTML = '';
+            document.getElementById('movieOverview').textContent = 'Cargando...';
+            
+            if (!videoPlayer) {
+                videoPlayer = videojs('videoPlayer', {
+                    controls: true,
+                    autoplay: true,
+                    preload: 'auto',
+                    fluid: true,
+                    responsive: true,
+                    techOrder: ['html5']
+                });
+                
+                videoPlayer.on('error', function() {
+                    console.error('Error en el reproductor');
+                    hideLoading();
+                });
+            }
+            
+            videoPlayer.src({ src: videoUrl, type: 'video/mp4' });
+            
+            videoPlayer.ready(() => {
+                videoPlayer.play().catch(e => console.warn('Autoplay no permitido:', e));
+            });
+            
+            try {
+                const tmdbData = await getTmdbData(movieName, productionYear);
+                if (tmdbData) {
+                    updateMovieInfo(tmdbData);
+                } else {
+                    showBasicInfo(movieName, productionYear);
+                }
+            } catch (error) {
+                console.error('Error al obtener detalles de TMDB:', error);
+                showBasicInfo(movieName, productionYear);
+            }
+            
+            hideLoading();
+        }
+
+        function closePlayer() {
+            if (videoPlayer) {
+                if (videoPlayer.isFullscreen()) videoPlayer.exitFullscreen();
+                videoPlayer.pause();
+                videoPlayer.currentTime(0);
+            }
+            
+            document.getElementById('player').style.display = 'none';
+        }
+
+        async function getTmdbData(movieName, year) {
+            const cacheKey = `tmdb_${movieName.toLowerCase().replace(/[^a-z0-9]/g, '')}_${year}`;
+            
+            if (tmdbCache[cacheKey]) return tmdbCache[cacheKey];
+            
+            try {
+                const searchUrl = `https://api.themoviedb.org/3/search/movie?api_key=${tmdbApiKey}&query=${encodeURIComponent(movieName)}${year ? `&year=${year}` : ''}&language=es`;
+                const searchResponse = await fetch(searchUrl);
+                const searchData = await searchResponse.json();
+                
+                if (searchData.results && searchData.results.length > 0) {
+                    const movieId = searchData.results[0].id;
+                    const detailsUrl = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${tmdbApiKey}&language=es&append_to_response=release_dates`;
+                    const detailsResponse = await fetch(detailsUrl);
+                    const detailsData = await detailsResponse.json();
+                    
+                    tmdbCache[cacheKey] = detailsData;
+                    localStorage.setItem('tmdbCache', JSON.stringify(tmdbCache));
+                    
+                    return detailsData;
+                }
+            } catch (error) {
+                console.error('Error al obtener datos de TMDB:', error);
+            }
+            
+            return null;
+        }
+
+        function updateMovieInfo(tmdbData) {
+            document.getElementById('movieTitle').textContent = tmdbData.title || 'Sin título';
+            
+            const releaseYear = tmdbData.release_date ? new Date(tmdbData.release_date).getFullYear() : 'N/A';
+            document.getElementById('movieYear').textContent = releaseYear;
+            
+            const runtime = tmdbData.runtime ? `${Math.floor(tmdbData.runtime / 60)}h ${tmdbData.runtime % 60}m` : 'Duración no disponible';
+            document.getElementById('movieRuntime').textContent = runtime;
+            
+            const rating = tmdbData.vote_average ? `${tmdbData.vote_average.toFixed(1)}/10 (${tmdbData.vote_count} votos)` : 'Sin calificación';
+            document.getElementById('movieRating').textContent = rating;
+            
+            const genres = tmdbData.genres && tmdbData.genres.length > 0 ? 
+                tmdbData.genres.map(g => `<span class="genre-tag">${g.name}</span>`).join('') : 
+                'Género no disponible';
+            document.getElementById('movieGenres').innerHTML = genres;
+            
+            const overview = tmdbData.overview || 'Descripción no disponible';
+            document.getElementById('movieOverview').textContent = overview;
+        }
+
+        function showBasicInfo(movieName, productionYear) {
+            document.getElementById('movieTitle').textContent = movieName;
+            document.getElementById('movieYear').textContent = productionYear || 'Año no disponible';
+            document.getElementById('movieRuntime').textContent = 'Duración no disponible';
+            document.getElementById('movieRating').textContent = 'Sin calificación';
+            document.getElementById('movieGenres').innerHTML = '<span class="genre-tag">Género no disponible</span>';
+            document.getElementById('movieOverview').textContent = 'Descripción no disponible';
+        }
+
+        function showLoading() {
+            document.getElementById('loadingSpinner').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingSpinner').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
