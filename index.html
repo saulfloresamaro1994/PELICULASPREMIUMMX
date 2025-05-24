@@ -1268,17 +1268,25 @@
         let videoPlayer = null;
         let genreSections = {};
 
-        // Función para hacer solicitudes con CORS
+        // Función mejorada para hacer solicitudes con CORS
         async function makeCorsRequest(url, options = {}) {
             try {
-                // Añadir encabezados CORS si no están presentes
+                // Verificar si estamos en GitHub Pages
+                const isGitHubPages = window.location.hostname.includes('github.io');
+                
+                // Si estamos en GitHub Pages y la URL es HTTP, usar proxy
+                if (isGitHubPages && url.startsWith('http://')) {
+                    url = `https://cors-anywhere.herokuapp.com/${url}`;
+                }
+
                 if (!options.headers) {
                     options.headers = {};
                 }
                 
                 options.headers['X-Emby-Token'] = embyApiKey;
                 options.headers['Accept'] = 'application/json';
-                options.mode = 'cors'; // Esto es importante para CORS
+                options.mode = 'cors';
+                options.credentials = 'omit';
                 
                 const response = await fetch(url, options);
                 
@@ -1289,7 +1297,21 @@
                 return await response.json();
             } catch (error) {
                 console.error('Error en la solicitud CORS:', error);
-                throw error;
+                
+                // Intentar con proxy como respaldo
+                try {
+                    const proxyUrl = `https://cors-anywhere.herokuapp.com/${url.replace(/^https?:\/\//, '')}`;
+                    const proxyResponse = await fetch(proxyUrl, {
+                        headers: {
+                            'X-Emby-Token': embyApiKey,
+                            'Accept': 'application/json'
+                        }
+                    });
+                    return await proxyResponse.json();
+                } catch (proxyError) {
+                    console.error('Error con proxy CORS:', proxyError);
+                    throw error;
+                }
             }
         }
 
